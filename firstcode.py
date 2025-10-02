@@ -1,7 +1,13 @@
 from fastapi import FastAPI
 from models import Products
+from database import session, engine
+import database_models
+# from sqlalchemy.orm import Session
 
 app = FastAPI()
+
+database_models.Base.metadata.create_all(bind=engine)
+
 
 products=[
   Products(id=1, name="jack n' jill",price=50),
@@ -11,6 +17,8 @@ products=[
 
 @app.get('/get_all_products')
 def get_Products():
+  # db = session()
+  # db
   return products
 
 @app.get('/get_by_id/{id}')
