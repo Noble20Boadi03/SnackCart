@@ -12,8 +12,18 @@ database_models.Base.metadata.create_all(bind=engine)
 products=[
   Products(id=1, name="jack n' jill",price=50),
   Products(id=2, name="oreos", price=60),
-  Products(id=3, name="potato", price=70)
+  Products(id=3, name="potato", price=70),
+  Products(id=4, name="flakes", price=70)
 ]
+
+def db_init():
+  db = session()
+  for p in products:
+    db.merge(database_models.Products(**p.model_dump()))
+
+  db.commit()
+
+db_init()
 
 @app.get('/get_all_products')
 def get_Products():
