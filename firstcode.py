@@ -1,8 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from models import Products
 from database import session, engine
 import database_models
-# from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session
 
 app = FastAPI()
 
@@ -16,6 +16,13 @@ products=[
   Products(id=4, name="flakes", price=70)
 ]
 
+def get_db():
+  db = session()
+  try:
+    yield db
+  finally:
+    db.commit
+
 def db_init():
   db = session()
   for p in products:
@@ -25,11 +32,11 @@ def db_init():
 
 db_init()
 
+#reads db and display through url
 @app.get('/get_all_products')
-def get_Products():
-  # db = session()
-  # db
-  return products
+def get_Products(db: Session = Depends(get_db)):
+  all_Products = db.query(database_models.Products).all()
+  return all_Products
 
 @app.get('/get_by_id/{id}')
 def get_product(id:int):
