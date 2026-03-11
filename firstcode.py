@@ -69,23 +69,15 @@ def del_by_id(id:int, db: Session = Depends(get_db)):
     return "successful"
   else:
     return "products not found"
-  # for i in range(len(products)):
-  #   if products[i].id == id:
-  #     del products[i]
-  # return products
 
+#enables adding of products to the db
 @app.post('/products')
 def add_prod(p:Product, db:Session = Depends(get_db)):
   db.add(postgre_database_models.Product(**p.model_dump()))
   db.commit()
   return p
 
-  # for prod in products:
-  #   if prod.id == p.id:
-  #     return('Already exist')
-  # products.append(p)
-  # return products
-
+#enables updates product details in the db
 @app.put('/products')
 def update_prod(id:int, prod:Product, db:Session = Depends(get_db)):
   p = db.query(postgre_database_models.Product).filter(postgre_database_models.Product.id == id).first()
@@ -97,8 +89,5 @@ def update_prod(id:int, prod:Product, db:Session = Depends(get_db)):
     db.commit()
     return "prod updated"
   else:
-  # for i in range(len(products)):
-  #   if products[i].id == id:
-  #     products[i] = prod
     return "not found"
 
